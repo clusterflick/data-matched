@@ -1,0 +1,11 @@
+{
+  "name": "data-matched",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Workflow for matching movie data with additional sources",
+  "author": "Alistair Brown <github@alistairjcbrown.com>",
+  "license": "MIT",
+  "dependencies": {
+    "scripts": "github:clusterflick/scripts"
+  }
+}
