@@ -24,7 +24,12 @@ jobs:
           fileName: "*"
           out-file-path: "combined-data"
       - name: Match Data
-        run: npx clusterflick/scripts match imdb
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 60
+          retry_wait_seconds: 30
+          max_attempts: 5
+          command: npx clusterflick/scripts match imdb
 
   match_with_letterboxd:
     name: Match with Letterboxd
@@ -44,7 +49,12 @@ jobs:
           fileName: "*"
           out-file-path: "combined-data"
       - name: Match Data
-        run: npx clusterflick/scripts match letterboxd
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 60
+          retry_wait_seconds: 30
+          max_attempts: 5
+          command: npx clusterflick/scripts match letterboxd
 
   match_with_metacritic:
     name: Match with Metacritic
@@ -64,7 +74,12 @@ jobs:
           fileName: "*"
           out-file-path: "combined-data"
       - name: Match Data
-        run: npx clusterflick/scripts match metacritic
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 60
+          retry_wait_seconds: 30
+          max_attempts: 5
+          command: npx clusterflick/scripts match metacritic
 
   match_with_rotten_tomatoes:
     name: Match with Rotten Tomatoes
@@ -84,7 +99,12 @@ jobs:
           fileName: "*"
           out-file-path: "combined-data"
       - name: Match Data
-        run: npx clusterflick/scripts match rottentomatoes
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 60
+          retry_wait_seconds: 30
+          max_attempts: 5
+          command: npx clusterflick/scripts match rottentomatoes
 
   create_release:
     name: Create Release
