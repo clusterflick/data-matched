@@ -28,7 +28,7 @@ jobs:
         with:
           timeout_minutes: 60
           retry_wait_seconds: 30
-          max_attempts: 5
+          max_attempts: 10
           command: npx clusterflick/scripts match imdb
 
   match_with_letterboxd:
@@ -53,7 +53,7 @@ jobs:
         with:
           timeout_minutes: 60
           retry_wait_seconds: 30
-          max_attempts: 5
+          max_attempts: 10
           command: npx clusterflick/scripts match letterboxd
 
   match_with_metacritic:
@@ -78,7 +78,7 @@ jobs:
         with:
           timeout_minutes: 60
           retry_wait_seconds: 30
-          max_attempts: 5
+          max_attempts: 10
           command: npx clusterflick/scripts match metacritic
 
   match_with_rotten_tomatoes:
@@ -103,7 +103,7 @@ jobs:
         with:
           timeout_minutes: 60
           retry_wait_seconds: 30
-          max_attempts: 5
+          max_attempts: 10
           command: npx clusterflick/scripts match rottentomatoes
 
   create_release:
