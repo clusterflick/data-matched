@@ -17,7 +17,15 @@ jobs:
         with:
           node-version-file: .node-version
       - run: npm install
-      - uses: robinraju/release-downloader@v1
+      - name: Download cached data
+        uses: robinraju/release-downloader@v1
+        with:
+          repository: "clusterflick/data-cached"
+          latest: true
+          fileName: "*"
+          out-file-path: "cached-data"
+      - name: Download combined data
+        uses: robinraju/release-downloader@v1
         with:
           repository: "clusterflick/data-combined"
           latest: true
@@ -47,7 +55,15 @@ jobs:
         with:
           node-version-file: .node-version
       - run: npm install
-      - uses: robinraju/release-downloader@v1
+      - name: Download cached data
+        uses: robinraju/release-downloader@v1
+        with:
+          repository: "clusterflick/data-cached"
+          latest: true
+          fileName: "*"
+          out-file-path: "cached-data"
+      - name: Download combined data
+        uses: robinraju/release-downloader@v1
         with:
           repository: "clusterflick/data-combined"
           latest: true
@@ -77,7 +93,15 @@ jobs:
         with:
           node-version-file: .node-version
       - run: npm install
-      - uses: robinraju/release-downloader@v1
+      - name: Download cached data
+        uses: robinraju/release-downloader@v1
+        with:
+          repository: "clusterflick/data-cached"
+          latest: true
+          fileName: "*"
+          out-file-path: "cached-data"
+      - name: Download combined data
+        uses: robinraju/release-downloader@v1
         with:
           repository: "clusterflick/data-combined"
           latest: true
@@ -107,7 +131,15 @@ jobs:
         with:
           node-version-file: .node-version
       - run: npm install
-      - uses: robinraju/release-downloader@v1
+      - name: Download cached data
+        uses: robinraju/release-downloader@v1
+        with:
+          repository: "clusterflick/data-cached"
+          latest: true
+          fileName: "*"
+          out-file-path: "cached-data"
+      - name: Download combined data
+        uses: robinraju/release-downloader@v1
         with:
           repository: "clusterflick/data-combined"
           latest: true
