@@ -6,8 +6,38 @@ on:
 name: Match Data
 
 jobs:
+  check_already_run:
+    name: Check if release already created today
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - name: Check for release today
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TODAY=$(TZ=Europe/London date +'%Y%m%d')
+
+          # Get the latest release tag
+          LATEST_TAG=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/releases/latest" \
+            --jq '.tag_name' 2>/dev/null || echo "")
+
+          # Tags are formatted as YYYYMMDD.HHMMSS, so check if it starts with today's date
+          if [[ "$LATEST_TAG" == ${TODAY}.* ]]; then
+            echo "Release already created today (tag: $LATEST_TAG). Skipping."
+            echo "should_run=false" >> $GITHUB_OUTPUT
+          else
+            echo "No release today (latest: $LATEST_TAG). Proceeding."
+            echo "should_run=true" >> $GITHUB_OUTPUT
+          fi
+
   match_with_imdb:
     name: Match with IMDB
+    needs: check_already_run
+    if: needs.check_already_run.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     env:
       MOVIEDB_API_KEY: ${{ secrets.MOVIEDB_API_KEY }}
@@ -46,6 +76,8 @@ jobs:
 
   match_with_letterboxd:
     name: Match with Letterboxd
+    needs: check_already_run
+    if: needs.check_already_run.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     env:
       MOVIEDB_API_KEY: ${{ secrets.MOVIEDB_API_KEY }}
@@ -84,6 +116,8 @@ jobs:
 
   match_with_metacritic:
     name: Match with Metacritic
+    needs: check_already_run
+    if: needs.check_already_run.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     env:
       MOVIEDB_API_KEY: ${{ secrets.MOVIEDB_API_KEY }}
@@ -122,6 +156,8 @@ jobs:
 
   match_with_rotten_tomatoes:
     name: Match with Rotten Tomatoes
+    needs: check_already_run
+    if: needs.check_already_run.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     env:
       MOVIEDB_API_KEY: ${{ secrets.MOVIEDB_API_KEY }}
@@ -163,11 +199,13 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       [
+        check_already_run,
         match_with_imdb,
         match_with_letterboxd,
         match_with_metacritic,
         match_with_rotten_tomatoes,
       ]
+    if: needs.check_already_run.outputs.should_run == 'true'
     steps:
       - name: Download All Artifacts
         uses: actions/download-artifact@v4
