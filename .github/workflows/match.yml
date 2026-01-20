@@ -89,6 +89,7 @@ jobs:
         with:
           node-version-file: .node-version
       - run: npm install
+      - run: npx playwright install --with-deps
       - name: Download cached data
         uses: robinraju/release-downloader@v1
         with:
