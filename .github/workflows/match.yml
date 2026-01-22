@@ -5,6 +5,10 @@ on:
 
 name: Match Data
 
+concurrency:
+  group: match-data
+  cancel-in-progress: false
+
 jobs:
   check_already_run:
     name: Check if release already created today
