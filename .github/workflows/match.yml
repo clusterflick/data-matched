@@ -252,8 +252,8 @@ jobs:
     name: Trigger downstream
     runs-on: ubuntu-latest
     needs: [create_release]
-    # Run on success or skip (when release already exists), but not on failure
-    if: always() && (needs.create_release.result == 'success' || needs.create_release.result == 'skipped')
+    # Only run if a new release was created (not when skipped due to existing release)
+    if: success()
     steps:
       - name: Repository Dispatch for clusterflick.com
         uses: peter-evans/repository-dispatch@v3
