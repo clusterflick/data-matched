@@ -87,6 +87,7 @@ jobs:
     runs-on: self-hosted
     env:
       MOVIEDB_API_KEY: ${{ secrets.MOVIEDB_API_KEY }}
+      PLAYWRIGHT_BROWSERS_PATH: $HOME/.cache/playwright-browsers
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
