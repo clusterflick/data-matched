@@ -73,7 +73,7 @@ jobs:
           timeout_minutes: 60
           retry_wait_seconds: 30
           max_attempts: 10
-          command: npm cache clean --force && npx clusterflick/scripts match imdb
+          command: rm -rf ~/.npm && npx clusterflick/scripts match imdb
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -118,7 +118,7 @@ jobs:
           timeout_minutes: 180
           retry_wait_seconds: 30
           max_attempts: 10
-          command: npm cache clean --force && npx clusterflick/scripts match letterboxd
+          command: rm -rf ~/.npm && npx clusterflick/scripts match letterboxd
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -166,7 +166,7 @@ jobs:
           timeout_minutes: 60
           retry_wait_seconds: 30
           max_attempts: 10
-          command: npm cache clean --force && npx clusterflick/scripts match metacritic
+          command: rm -rf ~/.npm && npx clusterflick/scripts match metacritic
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -208,7 +208,7 @@ jobs:
           timeout_minutes: 60
           retry_wait_seconds: 30
           max_attempts: 10
-          command: npm cache clean --force && npx clusterflick/scripts match rottentomatoes
+          command: rm -rf ~/.npm && npx clusterflick/scripts match rottentomatoes
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
