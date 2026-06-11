@@ -68,7 +68,7 @@ jobs:
           fileName: "*"
           out-file-path: "combined-data"
       - name: Match Data
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@v4
         with:
           timeout_minutes: 60
           retry_wait_seconds: 30
@@ -113,7 +113,7 @@ jobs:
           fileName: "*"
           out-file-path: "combined-data"
       - name: Match Data
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@v4
         with:
           timeout_minutes: 180
           retry_wait_seconds: 30
@@ -161,7 +161,7 @@ jobs:
           fileName: "*"
           out-file-path: "combined-data"
       - name: Match Data
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@v4
         with:
           timeout_minutes: 60
           retry_wait_seconds: 30
@@ -203,7 +203,7 @@ jobs:
           fileName: "*"
           out-file-path: "combined-data"
       - name: Match Data
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@v4
         with:
           timeout_minutes: 60
           retry_wait_seconds: 30
@@ -229,7 +229,7 @@ jobs:
     if: needs.check_already_run.outputs.should_run == 'true'
     steps:
       - name: Download All Artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: match_with_*
           path: matched-data/
@@ -259,7 +259,7 @@ jobs:
     if: success()
     steps:
       - name: Repository Dispatch for clusterflick.com
-        uses: peter-evans/repository-dispatch@v3
+        uses: peter-evans/repository-dispatch@v4
         with:
           token: ${{ secrets.PAT }}
           repository: clusterflick/clusterflick.com
