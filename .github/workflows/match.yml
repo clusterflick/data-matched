@@ -49,14 +49,7 @@ jobs:
     env:
       MOVIEDB_API_KEY: ${{ secrets.MOVIEDB_API_KEY }}
     steps:
-      - uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-      - uses: clusterflick/.github/setup-cache-paths@main
-      - run: npm install
+      - uses: clusterflick/.github/setup@main
       - name: Download cached data
         uses: clusterflick/release-downloader@v2
         with:
@@ -94,15 +87,9 @@ jobs:
     env:
       MOVIEDB_API_KEY: ${{ secrets.MOVIEDB_API_KEY }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: clusterflick/.github/setup@main
         with:
-          persist-credentials: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-      - uses: clusterflick/.github/setup-cache-paths@main
-      - run: npm install
-      - run: npx playwright install --with-deps
+          playwright: true
       - name: Download cached data
         uses: clusterflick/release-downloader@v2
         with:
@@ -146,14 +133,7 @@ jobs:
     env:
       MOVIEDB_API_KEY: ${{ secrets.MOVIEDB_API_KEY }}
     steps:
-      - uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-      - uses: clusterflick/.github/setup-cache-paths@main
-      - run: npm install
+      - uses: clusterflick/.github/setup@main
       - name: Download cached data
         uses: clusterflick/release-downloader@v2
         with:
@@ -191,14 +171,7 @@ jobs:
     env:
       MOVIEDB_API_KEY: ${{ secrets.MOVIEDB_API_KEY }}
     steps:
-      - uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-      - uses: clusterflick/.github/setup-cache-paths@main
-      - run: npm install
+      - uses: clusterflick/.github/setup@main
       - name: Download cached data
         uses: clusterflick/release-downloader@v2
         with:
@@ -236,14 +209,7 @@ jobs:
     env:
       MOVIEDB_API_KEY: ${{ secrets.MOVIEDB_API_KEY }}
     steps:
-      - uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-      - uses: clusterflick/.github/setup-cache-paths@main
-      - run: npm install
+      - uses: clusterflick/.github/setup@main
       - name: Download cached data
         uses: clusterflick/release-downloader@v2
         with:
