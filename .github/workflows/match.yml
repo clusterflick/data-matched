@@ -72,7 +72,7 @@ jobs:
           timeout_minutes: 60
           retry_wait_seconds: 30
           max_attempts: 10
-          command: npx scripts match imdb
+          command: npm run match -- imdb
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7
         with:
@@ -112,7 +112,7 @@ jobs:
           timeout_minutes: 180
           retry_wait_seconds: 30
           max_attempts: 10
-          command: npx scripts match letterboxd
+          command: npm run match -- letterboxd
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7
         with:
@@ -156,7 +156,7 @@ jobs:
           timeout_minutes: 60
           retry_wait_seconds: 30
           max_attempts: 10
-          command: npx scripts match metacritic
+          command: npm run match -- metacritic
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7
         with:
@@ -194,7 +194,7 @@ jobs:
           timeout_minutes: 60
           retry_wait_seconds: 30
           max_attempts: 10
-          command: npx scripts match moviedb
+          command: npm run match -- moviedb
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7
         with:
@@ -232,7 +232,7 @@ jobs:
           timeout_minutes: 60
           retry_wait_seconds: 30
           max_attempts: 10
-          command: npx scripts match rottentomatoes
+          command: npm run match -- rottentomatoes
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7
         with:

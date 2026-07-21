@@ -15,7 +15,7 @@ user experience.
 The workflow executes the match command to enhance movie data:
 
 ```bash
-npx clusterflick/scripts match
+npm run match
 ```
 
 This command:

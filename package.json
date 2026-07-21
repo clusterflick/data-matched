@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "Workflow for matching movie data with additional sources",
+  "scripts": {
+    "match": "node node_modules/scripts/index.js match"
+  },
   "author": "Alistair Brown <github@alistairjcbrown.com>",
   "license": "MIT",
   "dependencies": {
