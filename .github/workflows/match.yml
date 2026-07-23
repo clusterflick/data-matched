@@ -244,8 +244,10 @@ jobs:
     runs-on: ubuntu-latest
     # ncipollo/release-action creates a release + tag via GITHUB_TOKEN,
     # which requires contents: write (top-level default is contents: read).
+    # actions: read lets download-artifact use the REST API - see below.
     permissions:
       contents: write
+      actions: read
     needs:
       [
         check_already_run,
@@ -258,11 +260,16 @@ jobs:
     if: needs.check_already_run.outputs.should_run == 'true'
     steps:
       - name: Download All Artifacts
+        # Without github-token this uses the internal artifact service, whose
+        # GetSignedArtifactURL call intermittently 404s ("workflow run not
+        # found") on runs with several re-run attempts. Passing a token
+        # switches it to the REST API, which resolves artifacts reliably.
         uses: actions/download-artifact@v8
         with:
           pattern: match_with_*
           path: matched-data/
           merge-multiple: true
+          github-token: ${{ github.token }}
       - name: Generate Tag
         run: echo "TAG=$(TZ=Europe/London date +'%Y%m%d.%H%M%S')" >> $GITHUB_ENV
       - uses: ncipollo/release-action@v1
