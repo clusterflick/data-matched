@@ -41,6 +41,44 @@ jobs:
             echo "should_run=true" >> $GITHUB_OUTPUT
           fi
 
+  match_with_bechdel:
+    name: Match with Bechdel Test
+    needs: check_already_run
+    if: needs.check_already_run.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+    env:
+      MOVIEDB_API_KEY: ${{ secrets.MOVIEDB_API_KEY }}
+    steps:
+      - uses: clusterflick/.github/setup@main
+      - name: Download cached data
+        uses: clusterflick/release-downloader@v2
+        with:
+          token: ${{ secrets.PAT }}
+          repository: "clusterflick/data-cached"
+          latest: true
+          fileName: "*"
+          out-file-path: "cached-data"
+      - name: Download combined data
+        uses: clusterflick/release-downloader@v2
+        with:
+          token: ${{ secrets.PAT }}
+          repository: "clusterflick/data-combined"
+          latest: true
+          fileName: "*"
+          out-file-path: "combined-data"
+      - name: Match Data
+        uses: nick-fields/retry@v4
+        with:
+          timeout_minutes: 60
+          retry_wait_seconds: 30
+          max_attempts: 10
+          command: npm run match -- bechdel
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: match_with_bechdel
+          path: matched-data/
+
   match_with_imdb:
     name: Match with IMDB
     needs: check_already_run
@@ -251,6 +289,7 @@ jobs:
     needs:
       [
         check_already_run,
+        match_with_bechdel,
         match_with_imdb,
         match_with_letterboxd,
         match_with_metacritic,
