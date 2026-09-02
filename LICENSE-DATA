@@ -1,0 +1,41 @@
+Data licence — data-matched releases
+====================================
+
+The MIT licence in LICENSE covers the code in this repository. It does not
+cover the data published in this repository's releases, and no licence is
+granted over that data.
+
+The matched-data files are an internal build artifact. They exist so
+clusterflick.com can show a film's ratings next to its screenings, with each
+score linked back to the source it came from — which is how the site meets the
+attribution those sources ask for. They are published here because the pipeline
+runs in the open, not as a dataset offered for reuse.
+
+Every rating in them comes from somewhere else: IMDb, Letterboxd, Metacritic,
+Rotten Tomatoes, The Movie Database and the Bechdel Test. Clusterflick holds no
+rights in any of it and grants none. Two of those sources carry terms worth
+naming outright:
+
+  * Bechdel Test ratings are licensed under CC BY-NC 3.0
+    (https://creativecommons.org/licenses/by-nc/3.0/). Attribution is required
+    wherever they are shown, and neither they nor anything built on them may be
+    put to commercial use. Every matched entry carries a `url` back to the
+    film's page on bechdeltest.com for that purpose.
+  * IMDb material is used under IMDb's own non-commercial terms, which carry
+    an attribution requirement of their own. Read them at
+    https://developer.imdb.com/non-commercial-datasets/ rather than relying on
+    a copy here.
+
+Concretely:
+
+  * No licence is granted over these releases. Clusterflick does not hold the
+    rights it would need to grant one.
+  * There are no schema guarantees. The shape, the field names and the file
+    layout change whenever the pipeline needs them to — without notice, without
+    a version bump and without a deprecation period.
+  * There is no warranty and no guarantee of accuracy, availability or
+    continuity. Releases can stop, be deleted or be restructured at any time.
+
+For data you can use, see:
+
+    https://clusterflick.com/data-licence

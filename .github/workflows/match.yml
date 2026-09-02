@@ -321,6 +321,8 @@ jobs:
           tag: ${{ env.TAG }}
           commit: main
           body: |
+            ⚠️ **Internal build artifact — not licensed.** Every rating here belongs to the source it came from (IMDb, Letterboxd, Metacritic, Rotten Tomatoes, TMDB, the Bechdel Test) and Clusterflick grants no rights over any of it. Bechdel Test ratings additionally carry a [CC BY-NC 3.0](https://creativecommons.org/licenses/by-nc/3.0/) non-commercial restriction. No schema guarantees; changes without notice. For data you can use, see https://clusterflick.com/data-licence
+
             Created by job ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       - name: Output summary
         run: |

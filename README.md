@@ -59,3 +59,20 @@ data sources being used:
 - Additional API keys for third-party data sources (as needed)
 - `PAT` - Personal Access Token for publishing releases and triggering
   downstream workflows
+
+## Licence
+
+The code in this repository is licensed under the [MIT licence](LICENSE).
+
+The releases are **not licensed at all**. They are an internal build artifact:
+they exist so clusterflick.com can show a film's ratings beside its screenings,
+with each score linked back to its source — which is how the site meets the
+attribution those sources require. Every rating in them belongs to someone else,
+and Clusterflick grants no rights over any of it. The Bechdel Test ratings
+additionally carry a
+[CC BY-NC 3.0](https://creativecommons.org/licenses/by-nc/3.0/) non-commercial
+restriction, and IMDb material its own non-commercial terms.
+
+For data you can use, see the
+[data licence](https://clusterflick.com/data-licence). The exact terms for this
+repository are in [LICENSE-DATA](LICENSE-DATA).
