@@ -51,7 +51,7 @@ jobs:
     steps:
       - uses: clusterflick/.github/setup@main
       - name: Download cached data
-        uses: clusterflick/release-downloader@v2
+        uses: clusterflick/release-downloader@v4
         with:
           token: ${{ secrets.PAT }}
           repository: "clusterflick/data-cached"
@@ -59,7 +59,7 @@ jobs:
           fileName: "*"
           out-file-path: "cached-data"
       - name: Download combined data
-        uses: clusterflick/release-downloader@v2
+        uses: clusterflick/release-downloader@v4
         with:
           token: ${{ secrets.PAT }}
           repository: "clusterflick/data-combined"
@@ -89,7 +89,7 @@ jobs:
     steps:
       - uses: clusterflick/.github/setup@main
       - name: Download cached data
-        uses: clusterflick/release-downloader@v2
+        uses: clusterflick/release-downloader@v4
         with:
           token: ${{ secrets.PAT }}
           repository: "clusterflick/data-cached"
@@ -97,7 +97,7 @@ jobs:
           fileName: "*"
           out-file-path: "cached-data"
       - name: Download combined data
-        uses: clusterflick/release-downloader@v2
+        uses: clusterflick/release-downloader@v4
         with:
           token: ${{ secrets.PAT }}
           repository: "clusterflick/data-combined"
@@ -129,7 +129,7 @@ jobs:
         with:
           playwright: true
       - name: Download cached data
-        uses: clusterflick/release-downloader@v2
+        uses: clusterflick/release-downloader@v4
         with:
           token: ${{ secrets.PAT }}
           repository: "clusterflick/data-cached"
@@ -137,7 +137,7 @@ jobs:
           fileName: "*"
           out-file-path: "cached-data"
       - name: Download combined data
-        uses: clusterflick/release-downloader@v2
+        uses: clusterflick/release-downloader@v4
         with:
           token: ${{ secrets.PAT }}
           repository: "clusterflick/data-combined"
@@ -173,7 +173,7 @@ jobs:
     steps:
       - uses: clusterflick/.github/setup@main
       - name: Download cached data
-        uses: clusterflick/release-downloader@v2
+        uses: clusterflick/release-downloader@v4
         with:
           token: ${{ secrets.PAT }}
           repository: "clusterflick/data-cached"
@@ -181,7 +181,7 @@ jobs:
           fileName: "*"
           out-file-path: "cached-data"
       - name: Download combined data
-        uses: clusterflick/release-downloader@v2
+        uses: clusterflick/release-downloader@v4
         with:
           token: ${{ secrets.PAT }}
           repository: "clusterflick/data-combined"
@@ -211,7 +211,7 @@ jobs:
     steps:
       - uses: clusterflick/.github/setup@main
       - name: Download cached data
-        uses: clusterflick/release-downloader@v2
+        uses: clusterflick/release-downloader@v4
         with:
           token: ${{ secrets.PAT }}
           repository: "clusterflick/data-cached"
@@ -219,7 +219,7 @@ jobs:
           fileName: "*"
           out-file-path: "cached-data"
       - name: Download combined data
-        uses: clusterflick/release-downloader@v2
+        uses: clusterflick/release-downloader@v4
         with:
           token: ${{ secrets.PAT }}
           repository: "clusterflick/data-combined"
@@ -249,7 +249,7 @@ jobs:
     steps:
       - uses: clusterflick/.github/setup@main
       - name: Download cached data
-        uses: clusterflick/release-downloader@v2
+        uses: clusterflick/release-downloader@v4
         with:
           token: ${{ secrets.PAT }}
           repository: "clusterflick/data-cached"
@@ -257,7 +257,7 @@ jobs:
           fileName: "*"
           out-file-path: "cached-data"
       - name: Download combined data
-        uses: clusterflick/release-downloader@v2
+        uses: clusterflick/release-downloader@v4
         with:
           token: ${{ secrets.PAT }}
           repository: "clusterflick/data-combined"
