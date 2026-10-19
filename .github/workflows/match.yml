@@ -313,20 +313,58 @@ jobs:
         run: echo "TAG=$(TZ=Europe/London date +'%Y%m%d.%H%M%S')" >> $GITHUB_ENV
       - uses: ncipollo/release-action@v1
         id: release
+        # A failed upload is retried by the next step, which fails the job if
+        # it fails too.
+        continue-on-error: true
         with:
           allowUpdates: false
+          artifactErrorsFailBuild: true
+          artifacts: "matched-data/*"
+          # Create as a draft, attach every artifact, then publish. Without this
+          # the release is published empty and filled asset by asset, so for as
+          # long as the upload runs `releases/latest` is a partial snapshot, and
+          # a failed upload leaves one there. The retry below relies on it too:
+          # it finds the draft by tag and finishes it.
+          immutableCreate: true
+          makeLatest: true
+          tag: ${{ env.TAG }}
+          commit: main
+          body: &release-body |
+            ⚠️ **Internal build artifact — not licensed.** Every rating here belongs to the source it came from (IMDb, Letterboxd, Metacritic, Rotten Tomatoes, TMDB, the Bechdel Test) and Clusterflick grants no rights over any of it. Bechdel Test ratings additionally carry a [CC BY-NC 3.0](https://creativecommons.org/licenses/by-nc/3.0/) non-commercial restriction. No schema guarantees; changes without notice. For data you can use, see https://clusterflick.com/data-licence
+
+            Created by job ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      # The upload above can fail on an asset GitHub has in fact stored: the
+      # asset is saved, a 5xx comes back anyway, the action uploads it again and
+      # gets `already_exists`, which its retry (5xx only) does not handle. That
+      # voided a run whose every job had passed. This goes again on the same
+      # tag: it finds the draft (or creates one, if the first attempt never got
+      # that far), and uploads everything again - before uploading, the action
+      # by default deletes any asset already attached under the same name, so
+      # what the first attempt got up is replaced rather than colliding.
+      #
+      # `draft: true` because an update publishes the release *before* it
+      # uploads unless told otherwise - the partial `releases/latest` that
+      # immutableCreate exists to prevent - so the next step publishes it.
+      - name: Retry Release Upload
+        if: steps.release.outcome == 'failure'
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          draft: true
           artifactErrorsFailBuild: true
           artifacts: "matched-data/*"
           makeLatest: true
           tag: ${{ env.TAG }}
           commit: main
-          body: |
-            ⚠️ **Internal build artifact — not licensed.** Every rating here belongs to the source it came from (IMDb, Letterboxd, Metacritic, Rotten Tomatoes, TMDB, the Bechdel Test) and Clusterflick grants no rights over any of it. Bechdel Test ratings additionally carry a [CC BY-NC 3.0](https://creativecommons.org/licenses/by-nc/3.0/) non-commercial restriction. No schema guarantees; changes without notice. For data you can use, see https://clusterflick.com/data-licence
-
-            Created by job ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          body: *release-body
+      - name: Publish Retried Release
+        if: steps.release.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --draft=false --latest
       - name: Output summary
         run: |
-          echo "🔖 New release - ${{ steps.release.outputs.html_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "🔖 New release - ${{ steps.release.outputs.html_url || format('{0}/{1}/releases/tag/{2}', github.server_url, github.repository, env.TAG) }}" >> $GITHUB_STEP_SUMMARY
 
   trigger_downstream:
     name: Trigger downstream
