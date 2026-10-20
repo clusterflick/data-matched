@@ -147,7 +147,10 @@ jobs:
       - name: Match Data
         uses: nick-fields/retry@v4
         with:
-          timeout_minutes: 180
+          # The job's own 6-hour limit is the real bound: a Pi takes 3.5h+ for
+          # a full run, and a timed-out attempt only restarts from the cache.
+          # The action requires a timeout, so it is set to that same limit.
+          timeout_minutes: 360
           retry_wait_seconds: 30
           max_attempts: 10
           command: npm run match -- letterboxd
