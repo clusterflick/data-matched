@@ -73,11 +73,35 @@ jobs:
           retry_wait_seconds: 30
           max_attempts: 10
           command: npm run match -- bechdel
-      - name: Upload Artifacts
+      # upload-artifact retries a 5xx but fails at once on a connection error
+      # (ECONNRESET and the like), treating it as a self-hosted runner that
+      # can't reach GitHub. A momentary reset on the Macs' shared connection
+      # voided an hour of Letterboxd matching that way, so a failed upload goes
+      # again after a pause. The artifact is named after the job, so these
+      # steps are shared by every match job.
+      - &upload-artifacts
+        name: Upload Artifacts
+        id: upload
+        continue-on-error: true
         uses: actions/upload-artifact@v7
         with:
-          name: match_with_bechdel
+          name: ${{ github.job }}
           path: matched-data/
+      - &wait-before-retry
+        name: Wait Before Retrying Upload
+        if: steps.upload.outcome == 'failure'
+        run: sleep 30
+      # `overwrite` because the first attempt may have registered the artifact
+      # before the connection dropped, and a second create under the same name
+      # would then collide.
+      - &retry-upload
+        name: Retry Upload Artifacts
+        if: steps.upload.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ github.job }}
+          path: matched-data/
+          overwrite: true
 
   match_with_imdb:
     name: Match with IMDB
@@ -111,11 +135,9 @@ jobs:
           retry_wait_seconds: 30
           max_attempts: 10
           command: npm run match -- imdb
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: match_with_imdb
-          path: matched-data/
+      - *upload-artifacts
+      - *wait-before-retry
+      - *retry-upload
 
   match_with_letterboxd:
     name: Match with Letterboxd
@@ -159,11 +181,9 @@ jobs:
           retry_wait_seconds: 30
           max_attempts: 10
           command: npm run match -- letterboxd
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: match_with_letterboxd
-          path: matched-data/
+      - *upload-artifacts
+      - *wait-before-retry
+      - *retry-upload
       - name: Save test failure artifacts
         if: failure()
         uses: actions/upload-artifact@v7
@@ -203,11 +223,9 @@ jobs:
           retry_wait_seconds: 30
           max_attempts: 10
           command: npm run match -- metacritic
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: match_with_metacritic
-          path: matched-data/
+      - *upload-artifacts
+      - *wait-before-retry
+      - *retry-upload
 
   match_with_moviedb:
     name: Match with The Movie DB
@@ -241,11 +259,9 @@ jobs:
           retry_wait_seconds: 30
           max_attempts: 10
           command: npm run match -- moviedb
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: match_with_moviedb
-          path: matched-data/
+      - *upload-artifacts
+      - *wait-before-retry
+      - *retry-upload
 
   match_with_rotten_tomatoes:
     name: Match with Rotten Tomatoes
@@ -279,11 +295,9 @@ jobs:
           retry_wait_seconds: 30
           max_attempts: 10
           command: npm run match -- rottentomatoes
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: match_with_rotten_tomatoes
-          path: matched-data/
+      - *upload-artifacts
+      - *wait-before-retry
+      - *retry-upload
 
   create_release:
     name: Create Release
