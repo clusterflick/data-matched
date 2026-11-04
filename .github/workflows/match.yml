@@ -143,12 +143,14 @@ jobs:
     name: Match with Letterboxd
     needs: check_already_run
     if: needs.check_already_run.outputs.should_run == 'true'
-    # Macs only: a Letterboxd page costs 1-2s on a Mac against ~7s on a Pi,
-    # whose CPU the page's ad scripts compete for, so a full run is about an
-    # hour rather than about four. Match runs after transform, when the Macs
-    # are idle. With none online this job waits rather than falling back to a
-    # Pi, which is accepted: the site keeps the previous matched release.
-    runs-on: [self-hosted, macOS]
+    # The OptiPlex only: a Letterboxd page costs ~7s on a Pi, whose CPU the
+    # page's ad scripts compete for, against 1-2s on an x86 machine, so a full
+    # run is about an hour rather than about four. Linux + X64 is the OptiPlex
+    # alone (the Pis are ARM64, the Macs macOS), and it names no single runner,
+    # so any of its eight can take the job if one is stuck. With none online
+    # this job waits rather than falling back to a Pi, which is accepted: the
+    # site keeps the previous matched release.
+    runs-on: [self-hosted, Linux, X64]
     env:
       MOVIEDB_API_KEY: ${{ secrets.MOVIEDB_API_KEY }}
     steps:
