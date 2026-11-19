@@ -1,7 +1,7 @@
 # data-matched
 
 > **[Clusterflick](https://clusterflick.com)** is a free, open-source site
-> listing every film showing in London, from 450+ venues in one search.
+> listing every film showing in London, from 500+ venues in one search.
 >
 > This repository is the stage of the data pipeline that matches films to IMDb,
 > Letterboxd, Rotten Tomatoes and Metacritic for ratings and reviews. See the
