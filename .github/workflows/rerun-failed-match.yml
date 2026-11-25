@@ -1,0 +1,94 @@
+name: Re-run Failed Match
+
+# Re-runs the failed jobs of a Match Data run, which is how a failed run is
+# recovered by hand - automated, because by hand it waits for someone to see it.
+# The same as data-retrieved's rerun-failed-retrieve.yml.
+#
+# It exists for the failures a fresh runner fixes and the step's own retries
+# can't. On GitHub's runners that is mostly a source refusing one VM's IP:
+# bechdeltest.com answered the Bechdel job with a 429 on every one of ten
+# attempts over an hour on 24 and 25 November 2026, while the re-run, on a new
+# VM, crawled the whole site in 79 seconds. More attempts or longer waits inside
+# the job only spend longer on the same IP.
+#
+# This doesn't relax the release gate. Create Release still needs every match
+# job to pass, and a re-run is the same run with the same gate; a re-run of
+# failed jobs also re-runs Create Release, which was skipped. What a re-run
+# can't fix is left for a human:
+#
+# - A failed Create Release isn't retried here. Its own step already retries
+#   the upload once, and re-running it would cut a new timestamped release
+#   beside the draft the failure left behind, which needs looking at first.
+# - One automatic re-run (attempt 2). Each failing step has already made its
+#   own attempts by then, so a source still failing on a second runner is more
+#   likely down, changed or blocking us than unlucky, and going again would
+#   only repeat it against a source that may be offline.
+
+on:
+  # zizmor: ignore[dangerous-triggers] - Match Data is started only by
+  # workflow_dispatch and repository_dispatch, so no fork or pull request can
+  # start the run this follows, and this job checks out and runs no code: it
+  # reads the run's jobs and re-runs them.
+  workflow_run:
+    workflows: ["Match Data"]
+    types: [completed]
+
+permissions: {}
+
+concurrency:
+  group: rerun-failed-match-${{ github.event.workflow_run.id }}
+
+jobs:
+  rerun:
+    name: Re-run failed jobs
+    if: >-
+      github.event.workflow_run.conclusion == 'failure' &&
+      github.event.workflow_run.run_attempt < 2
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write # to read the run's jobs and re-run the failed ones
+    steps:
+      - name: Re-run failed jobs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+        run: |
+          failed_jobs=$(gh api --paginate \
+            "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/attempts/$RUN_ATTEMPT/jobs?per_page=100" \
+            --jq '.jobs[] | select(.conclusion != "success" and .conclusion != "skipped")' | jq -s .)
+          failed=$(jq -c 'map(.name)' <<< "$failed_jobs")
+          echo "Attempt $RUN_ATTEMPT of run $RUN_ID failed: $failed"
+
+          if jq -e 'index("Create Release") != null' <<< "$failed" > /dev/null; then
+            echo "::warning::Create Release failed - not re-running; check for a draft release left behind."
+            exit 0
+          fi
+
+          # A pause before going again, so the one re-run doesn't land inside
+          # the same outage: a source briefly down, or a refusal of the public
+          # IP the self-hosted runners share. GitHub's runners get a new VM
+          # either way.
+          #
+          # It's counted from when the last failed job finished, not from now.
+          # The run only completes once its slowest job does - Letterboxd takes
+          # half an hour - so a job that failed early has usually waited longer
+          # than the pause by the time this starts. GitHub won't re-run any job
+          # of a run still in progress, so this is as early as a re-run can go.
+          pause=600
+          last_failed_at=$(jq -r 'map(.completed_at // empty) | max // empty' <<< "$failed_jobs")
+          if [ -n "$last_failed_at" ]; then
+            waited=$(( $(date +%s) - $(date -d "$last_failed_at" +%s) ))
+          else
+            waited=0
+          fi
+          remaining=$(( pause - waited ))
+          if [ "$remaining" -gt 0 ]; then
+            echo "Last failed job finished ${waited}s ago; waiting ${remaining}s more."
+            sleep "$remaining"
+          else
+            echo "Last failed job finished ${waited}s ago; re-running now."
+          fi
+
+          gh run rerun "$RUN_ID" --failed --repo "$GITHUB_REPOSITORY"
+          echo "🔁 Re-ran failed jobs of ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID} ($failed)" >> "$GITHUB_STEP_SUMMARY"

@@ -66,12 +66,19 @@ jobs:
           latest: true
           fileName: "*"
           out-file-path: "combined-data"
+      # Two attempts, not ten. bechdeltest.com answers some runners' IPs with a
+      # 429 (Retry-After: 300) from the first year page on, and every attempt
+      # here runs on the same VM: on 24 and 25 November 2026 all ten attempts
+      # were refused, an hour each time, each after a full five-minute wait,
+      # while the re-run on a fresh VM crawled all 164 pages in 79 seconds. So
+      # this step only rides out a blip, and a refused IP fails in ~10 minutes
+      # for rerun-failed-match.yml to go again on a new runner.
       - name: Match Data
         uses: nick-fields/retry@v4
         with:
           timeout_minutes: 60
           retry_wait_seconds: 30
-          max_attempts: 10
+          max_attempts: 2
           command: npm run match -- bechdel
       # upload-artifact retries a 5xx but fails at once on a connection error
       # (ECONNRESET and the like), treating it as a self-hosted runner that
